@@ -1,5 +1,5 @@
-#ifndef NBG_UTILS_ITERATOR_HPP
-#define NBG_UTILS_ITERATOR_HPP
+#ifndef NBG_ITERATOR_HPP
+#define NBG_ITERATOR_HPP
 
 #include <type_traits>
 #include <iterator>
