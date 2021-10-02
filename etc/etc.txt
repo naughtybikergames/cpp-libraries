@@ -1,0 +1,1 @@
+ This directory is for configuration that should be distributed with the application binaries. Delete if no configuration is needed.
