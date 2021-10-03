@@ -25,6 +25,7 @@ namespace nbg {
             const std::string& operator[](int index) const;
             
             bool exist() const;
+            int size() const;
 
             const_iterator begin() const;
             const_iterator end() const;
@@ -33,6 +34,7 @@ namespace nbg {
             std::vector<std::string> shift(int by);
 
             virtual std::string string() const;
+            virtual char** c_str_arr();
     };
 }
 

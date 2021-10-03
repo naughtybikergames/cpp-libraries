@@ -39,6 +39,10 @@ bool cli_args::exist() const {
     return !_args.empty();
 }
 
+int cli_args::size() const {
+    return _args.size() + 1;
+}
+
 cli_args::const_iterator cli_args::begin() const {
     return cli_args::const_iterator(_args.begin());
 }
@@ -82,4 +86,15 @@ string cli_args::string() const {
     result.erase(result.length() - 1);
 
     return result;
+}
+
+char** cli_args::c_str_arr() {
+    _cstrings.clear();
+    _cstrings.reserve(size());
+
+    _cstrings.push_back(const_cast<char*>(_program.c_str()));
+    for (size_t i = 0; i < _args.size(); i++)
+        _cstrings.push_back(const_cast<char*>(_args[i].c_str()));
+
+    return &_cstrings[0];
 }
