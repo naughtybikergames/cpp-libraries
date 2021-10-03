@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(yaml)
-
-#External Libraries
-set(LIBRARIES yaml-cpp)
+project(nbg-yaml)
 
 #Build settings
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
@@ -16,12 +13,12 @@ get_filename_component(INCLUDE_DIR include ABSOLUTE)
 
 include_directories("${INCLUDE_DIR}")
 
-link_libraries(${LIBRARIES})
-
 #Modules
 set(MODULE ${PROJECT_NAME})
 add_library(${MODULE} STATIC | SHARED)
+target_link_libraries(${MODULE}
+    yaml-cpp
+)
 
 #Subdirectories
 add_subdirectory("${SOURCE_DIR}/nbg")
-add_subdirectory("${INCLUDE_DIR}/nbg")

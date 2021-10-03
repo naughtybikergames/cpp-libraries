@@ -1,4 +1,4 @@
-project(yaml)
+project(nbg-yaml)
 
 target_sources(${PROJECT_NAME}
     PRIVATE
