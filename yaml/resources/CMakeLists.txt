@@ -3,7 +3,7 @@ function(ADD_RESOURCES TARGET)
     foreach(RESOURCE ${ARGN})
         get_filename_component(RESOURCE_NAME ${RESOURCE} NAME)
         
-        file(RELATIVE_PATH RELATIVE_RESOURCE "${CMAKE_SOURCE_DIR}" "${RESOURCE}")
+        file(RELATIVE_PATH RELATIVE_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}" "${RESOURCE}")
         set(OUT_F "${CMAKE_BINARY_DIR}/${RELATIVE_RESOURCE}.o")
 
         get_filename_component(OUT_DIR ${OUT_F} PATH)
@@ -11,7 +11,7 @@ function(ADD_RESOURCES TARGET)
         add_custom_command(
             OUTPUT "${OUT_F}"
             DEPENDS "${RELATIVE_RESOURCE}"
-            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
             COMMAND ${CMAKE_COMMAND}
             ARGS -E make_directory ${OUT_DIR}
             COMMAND ${CMAKE_OBJCOPY}
@@ -29,10 +29,16 @@ function(ADD_RESOURCES TARGET)
 endfunction(ADD_RESOURCES)
 
 function(TARGET_LIBRARY_DISTRIBUTION TARGET DIST_DIR)
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${DIST_DIR}")
+        message(FATAL_ERROR "The DIST_DIR was not found: ${CMAKE_CURRENT_SOURCE_DIR}/${DIST_DIR}")
+    endif(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${DIST_DIR}")
+
     set(LIB_FLAG ${ARGV2})
     if(NOT LIB_FLAG)
         set(LIB_FLAG STATIC)
-    endif(NOT LIB_FLAG)
+    elseif(NOT ${LIB_FLAG} MATCHES STATIC AND NOT ${LIB_FLAG} MATCHES SHARED)
+        message(FATAL_ERROR "The LIB_FLAG argument must be either STATIC | SHARED if provided. Default is STATIC. Gave: ${LIB_FLAG}")
+    endif()
 
     set(ARCH ${ARGV3})
     if(NOT ARCH)
@@ -51,11 +57,11 @@ function(TARGET_LIBRARY_DISTRIBUTION TARGET DIST_DIR)
         set(VERSION 0.1)
     endif(NOT VERSION)
     string(REPLACE "." ";" VER_LIST ${VERSION})
-
+    
     if(BUILD_SHARED_LIBS AND ${LIB_FLAG} MATCHES SHARED)
         add_custom_command(TARGET ${TARGET} POST_BUILD
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${DIST_DIR}"
-            COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/${DIST_DIR}" "${DIST_DIR}"
+            COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/${DIST_DIR}" "${DIST_DIR}"
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${DIST_DIR}/${LIB_DEST}"
             COMMAND "${CMAKE_COMMAND}" -E copy
                 "$<TARGET_FILE:${TARGET}>"
@@ -66,7 +72,8 @@ function(TARGET_LIBRARY_DISTRIBUTION TARGET DIST_DIR)
         set(CURRENT_VER "")
         foreach(VER ${VER_LIST})
             add_custom_command(TARGET ${TARGET} POST_BUILD
-                COMMAND "${CMAKE_COMMAND}" -E create_symlink "${DIST_DIR}/${LIB_DEST}/$<TARGET_FILE_NAME:${TARGET}>.${VERSION}" "${DIST_DIR}/${LIB_DEST}/$<TARGET_FILE_NAME:${TARGET}>${CURRENT_VER}"
+                WORKING_DIRECTORY "${DIST_DIR}/${LIB_DEST}"
+                COMMAND "${CMAKE_COMMAND}" -E create_symlink "$<TARGET_FILE_NAME:${TARGET}>.${VERSION}" "$<TARGET_FILE_NAME:${TARGET}>${CURRENT_VER}"
                 COMMENT "Symlinking: ${DIST_DIR}${CURRENT_VER}"
             )
             string(APPEND CURRENT_VER "." ${VER})
@@ -84,7 +91,7 @@ function(TARGET_LIBRARY_DISTRIBUTION TARGET DIST_DIR)
     if(NOT BUILD_SHARED_LIBS AND ${LIB_FLAG} MATCHES STATIC)
         add_custom_command(TARGET ${TARGET} POST_BUILD
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${DIST_DIR}"
-            COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/${DIST_DIR}" "${DIST_DIR}"
+            COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/${DIST_DIR}" "${DIST_DIR}"
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${DIST_DIR}/${LIB_DEST}"
             COMMAND "${CMAKE_COMMAND}" -E copy
                 "$<TARGET_FILE:${TARGET}>"
@@ -103,6 +110,10 @@ function(TARGET_LIBRARY_DISTRIBUTION TARGET DIST_DIR)
 endfunction(TARGET_LIBRARY_DISTRIBUTION)
 
 function(TARGET_FILE_DISTRIBUTION TARGET FILE DIST_DIR DEST_PREFIX)
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${DIST_DIR}")
+        message(FATAL_ERROR "The DIST_DIR was not found: ${CMAKE_CURRENT_SOURCE_DIR}/${DIST_DIR}")
+    endif(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${DIST_DIR}")
+
     get_filename_component(ABS_FILE ${FILE} ABSOLUTE)
 
     set(ARCH ${ARGV4})
@@ -119,7 +130,7 @@ function(TARGET_FILE_DISTRIBUTION TARGET FILE DIST_DIR DEST_PREFIX)
     string(REPLACE "." ";" VER_LIST ${VERSION})
 
     if(IS_DIRECTORY "${ABS_FILE}")
-        file(RELATIVE_PATH RELATIVE_DIR "${CMAKE_SOURCE_DIR}" "${ABS_FILE}")
+        file(RELATIVE_PATH RELATIVE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" "${ABS_FILE}")
         add_custom_command(TARGET ${TARGET} POST_BUILD
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${DIST_DIR}/${DEST_PREFIX}/${RELATIVE_DIR}"
             COMMAND "${CMAKE_COMMAND}" -E copy_directory "${ABS_FILE}" "${DIST_DIR}/${DEST_PREFIX}/${RELATIVE_DIR}"
@@ -135,7 +146,7 @@ function(TARGET_FILE_DISTRIBUTION TARGET FILE DIST_DIR DEST_PREFIX)
         )
     else()
         get_filename_component(PARENT_DIR "${ABS_FILE}" DIRECTORY)
-        file(RELATIVE_PATH RELATIVE_DIR "${CMAKE_SOURCE_DIR}" "${PARENT_DIR}")
+        file(RELATIVE_PATH RELATIVE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" "${PARENT_DIR}")
         add_custom_command(TARGET ${TARGET} POST_BUILD
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${DIST_DIR}/${DEST_PREFIX}/${RELATIVE_DIR}"
             COMMAND "${CMAKE_COMMAND}" -E copy "${ABS_FILE}" "${DIST_DIR}/${DEST_PREFIX}/${RELATIVE_DIR}"

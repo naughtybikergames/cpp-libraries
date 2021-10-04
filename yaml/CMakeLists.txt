@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(nbg-yaml)
+project(nbg-yaml VERSION 0.1)
 
 #Build settings
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
