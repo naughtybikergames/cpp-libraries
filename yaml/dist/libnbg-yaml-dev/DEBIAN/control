@@ -1,0 +1,13 @@
+Package: libnbg-yaml-dev
+Version: 0.1
+Maintainer: Julian Sangillo <juliansangillo@naughtybikergames.io>
+Description: NBG YAML Devel
+  Devel conatins the nbg-yaml library as well as the static library and headers.
+  Wrapper for the yaml-cpp library's YAML::Node. Provides extra functionality
+  that makes code handling a yaml file more maintainable for the caller.
+Section: libdevel
+Architecture: amd64
+Homepage: https://github.com/naughtybikergames/cpp-libraries/tree/main/yaml
+Bugs: https://github.com/naughtybikergames/cpp-libraries/issues
+Tag: role::devel-lib devel::lang::c++ implemented-in::c++
+Depends: libyaml-cpp (>= 0.6), libc6 (>= 2.4), libgcc-s1 (>= 3.0), libstdc++6 (>= 9)
