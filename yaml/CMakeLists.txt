@@ -23,7 +23,6 @@ target_link_libraries(${MODULE}
     yaml-cpp
 )
 target_library_distribution(${MODULE} dist/libnbg-yaml-dev)
-target_library_distribution(${MODULE} dist/libnbg-yaml-dev SHARED)
 target_file_distribution(${MODULE} "${INCLUDE_DIR}" dist/libnbg-yaml-dev usr)
 target_library_distribution(${MODULE} dist/libnbg-yaml SHARED)
 
