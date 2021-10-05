@@ -1,0 +1,13 @@
+Package: libnbg-itr-devel
+Version: 0.1
+Maintainer: Julian Sangillo <juliansangillo@naughtybikergames.io>
+Description: NBG Iterator Devel
+  C++ templates for different custom iterator types. Useful when creating 
+  custom iterators for custom objects. Currently, only an input iterator 
+  (basic_iterator) is supported. More can be added when they are needed.
+  This is a Header-ONLY library.
+Section: libdevel
+Architecture: amd64
+Homepage: https://github.com/naughtybikergames/cpp-libraries/tree/main/iterator
+Bugs: https://github.com/naughtybikergames/cpp-libraries/issues
+Tag: role::devel-lib devel::lang::c++ implemented-in::c++
