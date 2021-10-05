@@ -22,9 +22,16 @@ add_library(${MODULE})
 target_link_libraries(${MODULE}
     yaml-cpp
 )
-target_library_distribution(${MODULE} dist/libnbg-yaml-dev)
-target_file_distribution(${MODULE} "${INCLUDE_DIR}" dist/libnbg-yaml-dev usr)
-target_library_distribution(${MODULE} dist/libnbg-yaml SHARED)
+target_library_distribution(${MODULE} dist/libnbg-yaml-dev
+    DEPENDS
+    "/usr/local/lib/libyaml-cpp.a"
+    "/usr/local/lib/libyaml-cpp.so"
+)
+target_file_distribution(${MODULE} "${INCLUDE_DIR}" dist/libnbg-yaml-dev DESTINATION usr)
+target_library_distribution(${MODULE} dist/libnbg-yaml TYPE SHARED
+    DEPENDS
+    "/usr/local/lib/libyaml-cpp.so"
+)
 
 #Subdirectories
 add_subdirectory("${SOURCE_DIR}/nbg")
