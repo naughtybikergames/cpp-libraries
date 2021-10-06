@@ -11,6 +11,7 @@ namespace nbg {
         private:
             std::string _program;
             std::vector<std::string> _args;
+            std::vector<char*> _cstrings;
         public:
             using const_iterator = nbg::basic_iterator<std::vector<std::string>>;
 

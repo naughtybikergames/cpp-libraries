@@ -1,0 +1,13 @@
+Package: libnbg-cli-args-dev
+Version: 0.1
+Maintainer: Julian Sangillo <juliansangillo@naughtybikergames.io>
+Description: NBG CLI Args Devel
+  Devel conatins the nbg-cli-args library as well as the static libraries and headers.
+  Parses command-line arguments in a cli application. Can be used directly or can 
+  be subclassed to add additional functionality to your application's arguments.
+Section: libdevel
+Architecture: amd64
+Homepage: https://github.com/naughtybikergames/cpp-libraries/tree/main/cli-args
+Bugs: https://github.com/naughtybikergames/cpp-libraries/issues
+Tag: role::devel-lib devel::lang::c++ implemented-in::c++
+Depends: libc6 (>= 2.4), libgcc-s1 (>= 3.0), libstdc++6 (>= 5.2)

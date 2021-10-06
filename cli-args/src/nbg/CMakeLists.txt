@@ -1,4 +1,4 @@
-project(cli-args)
+project(nbg-cli-args)
 
 target_sources(${PROJECT_NAME}
     PRIVATE
